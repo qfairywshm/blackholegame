@@ -3,6 +3,7 @@ import random
 
 
 class Mob(pygame.sprite.Sprite):
+    speedx = 8
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('image/star.png').convert()
@@ -10,7 +11,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 1921
         self.rect.y = random.randrange(180, 900)
-        self.speedx = 8
+        self.speedx = Mob.speedx
 
     def update(self):
         self.rect.x -= self.speedx
@@ -19,6 +20,7 @@ class Mob(pygame.sprite.Sprite):
             self.rect.y = random.randrange(80, 1000)
 
 class Player(pygame.sprite.Sprite):
+    speedy = 8
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.player_anim = [
@@ -42,9 +44,9 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_w]:
-            self.speedy = -8
+            self.speedy = -Player.speedy
         if keystate[pygame.K_x]:
-            self.speedy = 8
+            self.speedy = Player.speedy
         self.rect.y += self.speedy
         if self.rect.top < 100:
             self.rect.top = 100
@@ -61,6 +63,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
+    speedx = 7
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.hole_anim = [
@@ -71,14 +74,13 @@ class Enemy(pygame.sprite.Sprite):
         ]
         self.image = pygame.image.load('image/bigblackhole0.png').convert()
         self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.transform.rotate(self.image, random.randrange(1, 360))
         self.rect = self.image.get_rect()
         self.radius = 150
         self.rect.x = 1921
         self.rect.y = random.randrange(2, 400)
-        self.speedx = 10
+        self.speedx = Enemy.speedx
         self.current_image = 0
-        pygame.draw.circle(self.image, (255, 0, 0), self.rect.center, self.radius)
+        #pygame.draw.circle(self.image, (255, 0, 0), self.rect.center, self.radius)
 
     def update(self):
         self.rect.x -= self.speedx

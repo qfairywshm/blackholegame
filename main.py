@@ -21,10 +21,13 @@ class Game:
         self.player = Player()
         self.all_sprites.add(self.player)
 
+        self.star_timer_tick = 3500
+        self.hole_timer_tick = 15000
+
         self.star_timer = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.star_timer, 3000)
+        pygame.time.set_timer(self.star_timer, self.star_timer_tick)
         self.hole_timer = pygame.USEREVENT + 2
-        pygame.time.set_timer(self.hole_timer, 10000)
+        pygame.time.set_timer(self.hole_timer, self.hole_timer_tick)
 
         self.score = 0
 
@@ -43,6 +46,10 @@ class Game:
                 self.player = Player()
                 self.all_sprites.add(self.player)
                 self.score = 0
+                Mob.speedx = 8
+                Player.speedy = 8
+                Enemy.speedx = 7
+                pygame.time.set_timer(self.star_timer, 3500)
 
             self.screen.blit(self.bg, (self.bg_x, 0))
             self.screen.blit(self.bg, (self.bg_x + 1920, 0))
@@ -50,6 +57,16 @@ class Game:
             hits = pygame.sprite.spritecollide(self.player, self.stars, True, pygame.sprite.collide_circle)
             if hits:
                 self.score += 1
+                if Mob.speedx <= 15:
+                    Mob.speedx += 0.5
+                if Player.speedy <= 15:
+                    Player.speedy += 0.25
+                if Enemy.speedx <= 14:
+                    Enemy.speedx += 0.2
+                if self.star_timer_tick >= 1800:
+                    self.star_timer_tick -= 100
+                    pygame.time.set_timer(self.star_timer, self.star_timer_tick)
+
 
             eats = pygame.sprite.spritecollide(self.player, self.holes, False, pygame.sprite.collide_circle)
             if eats:
@@ -58,13 +75,13 @@ class Game:
             gravity = pygame.sprite.spritecollide(self.player, self.holes, False, pygame.sprite.collide_circle_ratio(3))
             if gravity:
                 if self.player.rect.centery > h.rect.centery:
-                    self.player.rect.centery -= 5
+                    self.player.rect.centery -= Player.speedy - 3
                 elif self.player.rect.centery < h.rect.centery:
-                    self.player.rect.centery += 5
+                    self.player.rect.centery += Player.speedy - 3
                 if self.player.rect.centerx > h.rect.centerx:
-                    self.player.rect.centerx -= 5
+                    self.player.rect.centerx -= Player.speedy - 5
                 elif self.player.rect.centerx < h.rect.centerx:
-                    self.player.rect.centerx += 5
+                    self.player.rect.centerx += Player.speedy - 3
             else:
                 if self.player.rect.x > 500:
                     self.player.rect.x -= 5
@@ -76,6 +93,7 @@ class Game:
                         self.player.rect.x = 500
                 #else:
                     #self.player.rect.x = 500
+            #gravity2 = pygame.sprite.spritecollide(h, self.stars, True, pygame.sprite.collide_circle)
 
 
 
