@@ -1,6 +1,6 @@
 import pygame
 from scripts.utils import draw_text, show_go_screen
-from scripts.enteties import Mob, Player, Enemy
+from scripts.enteties import Mob, Player, Enemy, Button
 class Game:
     def __init__(self):
         pygame.init()
@@ -13,6 +13,7 @@ class Game:
 
         self.bg = pygame.image.load('image/backgroundfull2.png')
         self.bg_x = 0
+        self.bg_speed = 1
 
         self.stars = pygame.sprite.Group()
         self.holes = pygame.sprite.Group()
@@ -31,12 +32,31 @@ class Game:
 
         self.score = 0
 
+        self.gbutton = Button((1920/3), (1080/3 - 40), 200, 50, 'Начать', 'image/button.png', 'image/button (1).png')
+        self.exitbutton = Button((1920/3), (1080/3 + 250), 200, 50, 'Выход', 'image/button.png', 'image/button (1).png')
 
-
-    def run(self):
-        self.running = True
+    def main_menu(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                self.screen.blit(self.bg, (self.bg_x, 0))
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.USEREVENT and event.button == self.exitbutton:
+                    pygame.quit()
+                self.exitbutton.handle_event(event)
+                self.exitbutton.check_hover(pygame.mouse.get_pos())
+                self.exitbutton.draw(self.screen)
+                if event.type == pygame.USEREVENT and event.button == self.gbutton:
+                    self.play()
+                self.gbutton.handle_event(event)
+                self.gbutton.check_hover(pygame.mouse.get_pos())
+                self.gbutton.draw(self.screen)
+                pygame.display.update()
+    def play(self):
+        running = True
         self.game_over = False
-        while self.running == True:
+        while running == True:
             if self.game_over:
                 show_go_screen(self.screen, self.bg, self.clock)
                 self.game_over = False
@@ -49,6 +69,7 @@ class Game:
                 Mob.speedx = 8
                 Player.speedy = 8
                 Enemy.speedx = 7
+                self.bg_speed = 1
                 pygame.time.set_timer(self.star_timer, 3500)
 
             self.screen.blit(self.bg, (self.bg_x, 0))
@@ -63,6 +84,8 @@ class Game:
                     Player.speedy += 0.25
                 if Enemy.speedx <= 14:
                     Enemy.speedx += 0.2
+                if self.bg_speed <= 10:
+                    self.bg_speed += 0.5
                 if self.star_timer_tick >= 1800:
                     self.star_timer_tick -= 100
                     pygame.time.set_timer(self.star_timer, self.star_timer_tick)
@@ -97,8 +120,8 @@ class Game:
 
 
 
-            self.bg_x -= 1
-            if self.bg_x == -1920:
+            self.bg_x -= self.bg_speed
+            if self.bg_x <= -1920:
                 self.bg_x = 0
 
             for event in pygame.event.get():
@@ -121,4 +144,4 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
-Game().run()
+Game().main_menu()
