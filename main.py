@@ -1,7 +1,7 @@
-
 import pygame
 from scripts.utils import draw_text, show_go_screen, pause_draw, draw_text2
 from scripts.enteties import Mob, Player, Enemy, Button, PageType  # Player2
+import sys
 
 
 class Game:
@@ -9,14 +9,15 @@ class Game:
         pygame.init()
 
         self.clock = pygame.time.Clock()
+        self.icon = pygame.image.load('image/icon.png')
+        pygame.display.set_icon(self.icon)
+        pygame.display.set_caption("Wandering Black hole")
 
         self.screen = pygame.display.set_mode((1920, 1080))
         self.surface = pygame.Surface((1920, 1080), pygame.SRCALPHA)
         self.text_surface = pygame.Surface((650, 700))
 
         self.sound = True
-
-        pygame.display.set_caption("Wandering Black hole")
 
         self.bg = pygame.image.load('image/backgroundfull2.png')
         self.bg2 = pygame.image.load('image/backgroundfull2.png')
@@ -39,10 +40,10 @@ class Game:
         self.hole_timer = pygame.USEREVENT + 2
         pygame.time.set_timer(self.hole_timer, self.hole_timer_tick)
 
-        self.pages = [PageType.yellow_star.value, PageType.white_star.value, PageType.red_star.value, PageType.blue_star.value,
-                      PageType.variable_star.value, PageType.neutron_star.value, PageType.two_body.value,
-                      PageType.three_body.value, PageType.dyson_star.value, PageType.stellar_hole.value, PageType.middle_hole.value,
-                      PageType.supermassive.value]
+        self.pages = [PageType.yellow_star.value, PageType.white_star.value, PageType.red_star.value,
+                      PageType.blue_star.value, PageType.variable_star.value, PageType.neutron_star.value,
+                      PageType.two_body.value, PageType.three_body.value, PageType.dyson_star.value,
+                      PageType.stellar_hole.value, PageType.middle_hole.value, PageType.supermassive.value]
         self.page_num = 0
 
         self.score = 0
@@ -53,8 +54,8 @@ class Game:
                                  'image/button (1).png')
         self.backbutton = Button((1920 / 3 + 700), (1080 / 3 - 250), 200, 50, 'Назад', 'image/buttonmini.png',
                                  'image/buttonmini2.png')
-        self.pastbutton = Button((200), (500), 200, 50, '', 'image/arrowleft.png', 'image/arrowleft2.png')
-        self.nextbutton = Button((1600), (500), 200, 50, '', 'image/arrow button white.png',
+        self.pastbutton = Button(200, 500, 200, 50, '', 'image/arrowleft.png', 'image/arrowleft2.png')
+        self.nextbutton = Button(1600, 500, 200, 50, '', 'image/arrow button white.png',
                                  'image/arrow button black.png')
         pygame.mixer.music.load('audio/main_menu_theme.mp3')
         pygame.mixer.music.play(-1)
@@ -67,8 +68,10 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    sys.exit()
                 if event.type == pygame.USEREVENT and event.button == self.exitbutton:
                     pygame.quit()
+                    sys.exit()
                 self.exitbutton.handle_event(event)
                 self.exitbutton.check_hover(pygame.mouse.get_pos())
                 self.exitbutton.draw(self.screen)
@@ -225,6 +228,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         if pause:
@@ -245,123 +249,6 @@ class Game:
             draw_text(self.screen, 'счет: ' + str(self.score), 30, 350, 150)
             pygame.display.update()
             self.clock.tick(60)
-
-    # def tet(self):
-    #     running = True
-    #     self.game_over = False
-    #     while running:
-    #         if self.game_over:
-    #             show_go_screen(self.screen, self.bg, self.clock)
-    #             self.game_over = False
-    #             self.all_sprites = pygame.sprite.Group()
-    #             self.stars = pygame.sprite.Group()
-    #             self.holes = pygame.sprite.Group()
-    #             self.player = Player2()
-    #             self.all_sprites.add(self.player)
-    #             self.score = 0
-    #             Mob.speedx = 8
-    #             Player.speedy = 8
-    #             Enemy.speedx = 7
-    #             self.bg_speed = 1
-    #             pygame.time.set_timer(self.star_timer, 3500)
-    #
-    #         self.screen.blit(self.bg, (self.bg_x, 0))
-    #
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 pygame.quit()
-    #
-    #         self.all_sprites.update()
-    #         self.all_sprites.draw(self.screen)
-    #         draw_text(self.screen, 'счет: ' + str(self.score), 30, 350, 150)
-    #
-    #         pygame.display.update()
-    #         self.clock.tick(60)
-
-#       def main(self):
-#         WIN_WIDTH = 1920
-#         WIN_HEIGHT = 1080
-#         DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
-#         SUN_COLOR = "yellow"
-#         stars = []
-#         all_sprites = pygame.sprite.Group()
-#
-#         # Space init
-#         pygame.init()
-#         screen = pygame.display.set_mode(DISPLAY)
-#
-#         bg = pygame.image.load('image/backgroundfull2.png')
-#         screen.blit(self.bg, (self.bg_x, 0))
-#         player = Player2()
-#         all_sprites.add(player)
-#
-#         X0 = player.rect.x
-#         Y0 = player.rect.y
-#         # Sun mass
-#         M0 = 5000
-#         # Stop conditions
-#         CRASH_DIST = 10
-#         OUT_DIST = 1000
-#         # PyGame init
-#
-#
-#         # Timer init
-#         timer = pygame.time.Clock()
-#
-#         # Planet init
-#         planet = pygame.image.load('image/star.png').convert()
-#         planet.set_colorkey((255, 255, 255))
-#
-#
-#         # Planet to Sun distance
-#         r = 0.0
-#         # Initial planet pos, speed and accel
-#         x = 700
-#         y = 500
-#         vx = 0.1
-#         vy = 1.5
-#         ax = 0.0
-#         ay = 0.0
-#
-#         done = False
-#         while not done:
-#             timer.tick(50)
-#             for e in pygame.event.get():
-#                 if e.type == QUIT:
-#                     done = True
-#                     break
-#
-#             r = sqrt((x - X0) ** 2 + (y - Y0) ** 2)
-#
-#             ax = M0 * (X0 - x) / r ** 3
-#             ay = M0 * (Y0 - y) / r ** 3
-#
-#             # New spped based on accel
-#             vx += ax
-#             vy += ay
-#
-#             # New pos based on speed
-#             x += vx
-#             y += vy
-#
-#             screen.blit(bg, (0, 0))
-#             screen.blit(planet, (x, y))
-#             all_sprites.update()
-#             all_sprites.draw(self.screen)
-#             pygame.display.update()
-#
-#             if r < CRASH_DIST:
-#                 done = True
-#                 print("Crashed")
-#                 break
-#             if r > OUT_DIST:
-#                 done = True
-#                 print("Out of system")
-#
-#                 break
-#
-#         # Farewell
-#         print(":-)")
 
 
 Game().main_menu()
